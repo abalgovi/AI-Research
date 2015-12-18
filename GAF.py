@@ -57,6 +57,7 @@ def runDatasets( individual, num, ttlRuns, ttlEpochs, ttlDatasets, queue ):
 #------------------------------------------- BEGIN GENETIC ALGORITHM -------------------------------------------#
 
 population, preserve = [], multiprocessing.Queue()
+
 '''f = open("./GAArchive")
 lines = f.readlines()
 for line in lines:
@@ -69,7 +70,7 @@ for line in lines:
 
 for c in xrange(0,40): population.append(GAFChromosome.GAFChromosome(85))
 
-for generation in xrange( 0, 300 ):
+for generation in xrange( 0, 100 ):
    
    processes = []
    print "\nSTARTED AT TIME", ctime( time() )
@@ -87,6 +88,7 @@ for generation in xrange( 0, 300 ):
 
    eliteIndividual, loser, elite = population[0], population[0].fitness, population[0].fitness
    ttlFitness = 0
+   
    # determine the elite  individual and the least and greatest fitnesses
    for chrom in population:
       print "INDIVIDUAL", chrom, "HAD FITNESS", chrom.fitness
@@ -100,25 +102,15 @@ for generation in xrange( 0, 300 ):
 
    # perform selection, crossover, and mutation
    population = population[0].selection( population, ttlFitness )
+   
    mates = random.sample(range(0,len(population)), len(population))
    for chrom in xrange(0,len(population)-1,2):
       population[mates[chrom]].crossover( population[mates[chrom+1]] )
       for mutant in xrange(chrom,chrom+2): population[mates[mutant]].mutate() 
    
-   # duplicate individuals check
-   for ind in xrange(len(population) - 1):
-      while( population[ind].isDuplicate( ind, population ) == 1 ):
-         population[ind].crossover( population, ind )
-         population[ind].mutate()
-
-   index = 0
    # elitism, insert the elite individual back into the population
-   if len(population)%2 > 0:
-      index = population[len(population)-1]
-      population[index] = eliteIndividual
-   else:
-      index = random.randint(0,len(population)-1)
-      population[index] = eliteIndividual
+   index = random.randint(0,len(population)-1)
+   population[index] = eliteIndividual
       
    print "\nElite Individual inserted at index: ", index
    print "FINISHED GENERATION AT TIME", ctime( time() ), "\n"
