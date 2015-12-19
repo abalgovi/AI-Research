@@ -2,6 +2,7 @@ from random import randint, uniform, sample
 from math import pow
 import numpy as np
 
+
 class GAChromosome:
    
    archive = []
